@@ -46,3 +46,7 @@ group :development do
 end
 
 gem 'rivendell-import', '~> 1.3'
+
+# Used for secured API
+gem 'jwt'
+

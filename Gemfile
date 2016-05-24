@@ -45,3 +45,4 @@ group :development do
   gem 'spring'
 end
 
+gem 'rivendell-import', '~> 1.3'

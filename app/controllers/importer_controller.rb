@@ -1,7 +1,6 @@
 class ImporterController < ApplicationController
   protect_from_forgery with: :null_session
   def index
-    byebug
     api_key = Rails.configuration.x.api['api_key']
     decoded_token = JWT.decode params[:data], api_key, true, :algorithm => 'HS256'
     data_json = decoded_token.first['data']

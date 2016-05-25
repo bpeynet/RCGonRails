@@ -1,0 +1,5 @@
+production:
+  api_key: <%= ENV["API_KEY"] %>
+
+development:
+  api_key: secret_key

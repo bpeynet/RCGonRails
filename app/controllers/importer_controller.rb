@@ -5,7 +5,16 @@ class ImporterController < ApplicationController
     decoded_token = JWT.decode params[:data], ImporterController::HMAC_SECRET, true, { :algorithm => 'HS256' }
     data_json = decoded_token.first['data']
     data = ActiveSupport::JSON.decode(data_json);
+    #render :json => data
 
-    render :json => data
+    con = Mysql2::Client.new (:host => "localhost", :username => "root", :password => "radiocampus")
+    con.select_db "RCG"
+    #rs = con.query("Select title from CART where number = 210660")
+    #rs.first
+
+    #création de cartouche - cut - fichier mp3
+
+    con.close
+
   end
 end

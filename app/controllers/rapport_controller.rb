@@ -1,4 +1,5 @@
 class RapportController < ApplicationController
+  protect_from_forgery with: :null_session
   def index
     begin_date = params[:begin_date]
     end_date = params[:end_date]

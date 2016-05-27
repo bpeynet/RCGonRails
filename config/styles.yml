@@ -1,2 +1,110 @@
+# Utilisation du fichier de mapping :
+# <numéro de genre disco>: <nom du scheduler code Rivendell>
+# exemple :
+# 4: MuElectro
+
+# Selection musiques ambient
+111: MuAmbient
+
+# Selection Bass Music
+159: MuBassMsic
+
+# Selection musicale tendance Chanson
+152: MuChanson
+
+# Selection musicale tendance Classique/Contemporain
+153: MuClassic
+
+# Selection musicale tendance Country/Blues
+154: MuCntryBlu
+
+# Selection musicale au tempo lent
+161: MuDwnTempo
+
+# Selection musicale tendance Electro
 4: MuElectro
+
+# Selection Musiques Experimentales
+58: MuExp
+
+# Selection musicale spe/soir/extreme
+163: MuExtreme
+
+# Selection musicale tendance Folk/Acoustique
+155: MuFolk
+
+# Selection musicale langue francaise
 164: MuFR
+
+# Selection musicale tendance Funk/Soul
+156: MuFunkSoul
+
+# Selection musicale GOLD intemporelle
+165: MuGOLD
+
+# Selection Groove/RnB
+166: MuGroovRnB
+
+# Selection musicale tendance Hip-Hop
+157: MuHipHop
+
+# Selection House
+142: MuHouse
+
+# Selection Indie-Rock
+131: MuIndie
+
+# Selection musique instrumentale
+167: MuInstru
+
+# Selection musicale tendance Jazz
+23: MuJazz
+
+# Selection musicale de groupes/artistes locaux
+168: MuLocal
+
+# Selection Metal
+72: MuMetal
+
+# Selection Noise
+63: MuNoise
+
+# Selection musicale pour creneaux PlayList
+# TODO
+
+# Selection musicale tendance Pop
+2: MuPop
+
+# Selection Punk
+123: MuPunk
+
+# Selection Rap
+82: MuRap
+
+# Selection musicale tendance Reggae/Dub
+3: MuReggDub
+
+# Selection musicale de reprises
+172: MuReprise
+
+# Selection musicale tendance Rock
+1: MuRock
+
+# Selection Techno
+69: MuTechno
+
+# Selection musicale tendance World/Latin
+158: MuWorldLat
+
+# Poesie
+171: Poesie
+
+# Selection musicale titres > 12min
+169: MuLong
+
+# Selection musicale titres < 2 min
+160: MuCourt
+
+# Selection musicale math ou post rock
+170: MuMathPost
+

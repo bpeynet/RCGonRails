@@ -8,9 +8,9 @@ class RapportController < ApplicationController
 
     # liste des compteurs par style et le total
     counters = Array.new(styles_disco.count + 1, 0)
-
+    
     # effectue le mapping entre les styles Disco et Rivendell
-    styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style)}
+    styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i)}
 
     if valid_date?(begin_date_str) && valid_date?(end_date_str)
       #création de connection avec la db Rivendell

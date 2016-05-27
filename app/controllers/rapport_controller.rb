@@ -28,11 +28,14 @@ class RapportController < ApplicationController
         # la combinaison aléatoire des styles dans la colonne SCHED_CODES ne permet pas
         # de faire cela en une seule requête
         styles_rivendell.each_with_index do |style, i|
-          query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c
+          if style.nil?
+            counters[i] = 'na'
+          else
+            query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c
           WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"
-          rs = con.query(query)
-          counters[i] += rs.first['count']
-        end
+            rs = con.query(query)
+            counters[i] += rs.first['count']
+          end
 
         # calcul du total sur le jour
         query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c

@@ -8,7 +8,7 @@ class RapportController < ApplicationController
 
     # liste des compteurs par style et le total
     counters = Array.new(styles_disco.count + 1, 0)
-    
+
     # effectue le mapping entre les styles Disco et Rivendell
     styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i)}
 
@@ -36,6 +36,7 @@ class RapportController < ApplicationController
             rs = con.query(query)
             counters[i] += rs.first['count']
           end
+        end
 
         # calcul du total sur le jour
         query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c

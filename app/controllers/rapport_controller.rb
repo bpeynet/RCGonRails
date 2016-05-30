@@ -21,38 +21,52 @@ class RapportController < ApplicationController
 
       begin_date = to_date(begin_date_str)
       end_date = to_date(end_date_str)
+      noTable = false
 
       # itération sur les jours entre les deux dates
       iterate_days(begin_date, end_date) do |current_date|
-        formatted_current_date = format_date(current_date)
+	formatted_current_date = format_date(current_date)
 
-        # boucle sur les styles
-        # la combinaison aléatoire des styles dans la colonne SCHED_CODES ne permet pas
-        # de faire cela en une seule requête
-        styles_rivendell.each_with_index do |style, i|
-          if style.nil?
-            counters[i] = nil 
-          else
-            query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c
-          WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"
-            rs = con.query(query)
-            counters[i] += rs.first['count']
-          end
-        end
+	# recherche du nom de la table associée à la date
+	query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'Rivendell' AND table_name LIKE '%#{formatted_current_date}%'"
+	rs = con.query(query)
+	if rs.count > 0
+	  tableName = rs.first['table_name']
+	  # boucle sur les styles
+	  # la combinaison aléatoire des styles dans la colonne SCHED_CODES ne permet pas
+	  # de faire cela en une seule requête
+	  styles_rivendell.each_with_index do |style, i|
+	    if style.nil?
+	      counters[i] = nil 
+	    else
+	      query = "SELECT COUNT(l.ID) AS count FROM #{tableName} l, CART c
+	  WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"
+	      rs = con.query(query)
+	      counters[i] += rs.first['count']
+	    end
+	  end
 
-        # calcul du total sur le jour
-        query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c
-          WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER"
-        rs = con.query(query)
-        counters[counters.count - 1] += rs.first['count']
+	  # calcul du total sur le jour
+	  query = "SELECT COUNT(l.ID) AS count FROM #{tableName} l, CART c
+	  WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER"
+	  rs = con.query(query)
+	  counters[counters.count - 1] += rs.first['count']	
+	else
+	  noTable = true
+	  break
+	end
       end
 
+      if noTable
+	  render :json => { :error => 'archives unavailables for these dates' }
+      else
+	# ajout des colonnes playlist et total pour rendu json
+	styles_disco << :playlist
+     	styles_disco << :total
+       	render :json => result_hash(styles_disco, counters)
+      end
       con.close
 
-      # ajout des colonnes playlist et total pour rendu json
-      styles_disco << :playlist
-      styles_disco << :total
-      render :json => result_hash(styles_disco, counters)
     else   
       # l'une des dates passée en paramètre est incorrecte
       render :json => { :error => 'invalid date' }
@@ -88,7 +102,7 @@ class RapportController < ApplicationController
   def format_date(date)
     old = date.to_s
     y,m,d = old.split '-'
-    "#{y}_#{m}_#{d}"
+    "#{y}#{m}#{d}"
   end
 
 end

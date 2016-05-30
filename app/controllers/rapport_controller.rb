@@ -1,5 +1,6 @@
 class RapportController < ApplicationController
   protect_from_forgery with: :null_session
+  include DatabaseConnection
   def index
     begin_date_str = params[:begin_date]
     end_date_str = params[:end_date]
@@ -17,7 +18,6 @@ class RapportController < ApplicationController
     if valid_date?(begin_date_str) && valid_date?(end_date_str)
       # connection à la db Rivendell
       require 'database_connection'
-      include DatabaseConnection
 
       DatabaseConnection::connect do |con|
 

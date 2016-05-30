@@ -108,3 +108,5 @@
 # Selection musicale math ou post rock
 170: MuMathPost
 
+# Selection musicale recente
+playlist : MuPlayList

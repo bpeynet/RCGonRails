@@ -1,5 +1,6 @@
 class RapportController < ApplicationController
   protect_from_forgery with: :null_session
+  require 'database_connection'
   include DatabaseConnection
   def index
     begin_date_str = params[:begin_date]
@@ -9,6 +10,7 @@ class RapportController < ApplicationController
 
     # liste des compteurs par style, la playlist et le total
     counters = Array.new(styles_disco.count + 2, 0)
+    lengths = Array.new(styles_disco.count + 2, 0)
 
     # effectue le mapping entre les styles Disco et Rivendell
     styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i) }
@@ -17,7 +19,6 @@ class RapportController < ApplicationController
 
     if valid_date?(begin_date_str) && valid_date?(end_date_str)
       # connection à la db Rivendell
-      require 'database_connection'
 
       DatabaseConnection::connect do |con|
 
@@ -41,18 +42,20 @@ class RapportController < ApplicationController
 	      if style.nil?
 		counters[i] = nil 
 	      else
-		query = "SELECT COUNT(l.ID) AS count FROM #{tableName} l, CART c
+		query = "SELECT COUNT(l.ID) AS count, SUM(c.AVERAGE_LENGTH) AS length FROM #{tableName} l, CART c
 	  WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"
 		rs = con.query(query)
 		counters[i] += rs.first['count']
+		lengths[i] += rs.first['length'] || 0
 	      end
 	    end
 
 	    # calcul du total sur le jour
-	    query = "SELECT COUNT(l.ID) AS count FROM #{tableName} l, CART c
+	    query = "SELECT COUNT(l.ID) AS count, SUM(c.AVERAGE_LENGTH) AS length FROM #{tableName} l, CART c
 	  WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER"
 	    rs = con.query(query)
 	    counters[counters.count - 1] += rs.first['count']	
+	    lengths[lengths.count - 1] += rs.first['length']	
 	  else
 	    noTable = true
 	    break
@@ -65,7 +68,7 @@ class RapportController < ApplicationController
 	  # ajout des colonnes playlist et total pour rendu json
 	  styles_disco << :playlist
 	  styles_disco << :total
-	  render :json => result_hash(styles_disco, counters)
+	  render :json => result_hash(styles_disco, counters, lengths)
 	end
       end
 
@@ -96,9 +99,10 @@ class RapportController < ApplicationController
     Date.new(y.to_i, m.to_i, d.to_i)
   end
 
-  def result_hash(keys, values)
-    zipped = keys.zip(values)
-    Hash[zipped]
+  def result_hash(styles, counters, lengths)
+    styles.map.with_index do |style, i|
+      { style => { :count => counters[i], :length => lengths[i] } }
+    end
   end
 
   def format_date(date)

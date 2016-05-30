@@ -10,7 +10,9 @@ class RapportController < ApplicationController
     counters = Array.new(styles_disco.count + 1, 0)
 
     # effectue le mapping entre les styles Disco et Rivendell
-    styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i)}
+    styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i) }
+
+    styles_rivendell << "MuPlayList"
 
     if valid_date?(begin_date_str) && valid_date?(end_date_str)
       #création de connection avec la db Rivendell
@@ -47,7 +49,8 @@ class RapportController < ApplicationController
 
       con.close
 
-      # ajout de la colonne total pour rendu json
+      # ajout des colonnes playlist et total pour rendu json
+      styles_disco << :playlist
       styles_disco << :total
       render :json => result_hash(styles_disco, counters)
     else   

@@ -29,7 +29,7 @@ class RapportController < ApplicationController
         # de faire cela en une seule requête
         styles_rivendell.each_with_index do |style, i|
           if style.nil?
-            counters[i] = 'na'
+            counters[i] = nil 
           else
             query = "SELECT COUNT(l.ID) AS count FROM #{formatted_current_date}_LOG l, CART c
           WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"

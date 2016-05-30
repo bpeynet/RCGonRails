@@ -43,7 +43,7 @@ class RapportController < ApplicationController
 		counters[i] = nil 
 	      else
 		query = "SELECT COUNT(l.ID) AS count, SUM(c.AVERAGE_LENGTH) AS length FROM #{tableName} l, CART c
-	  WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"
+	  WHERE GROUP_NAME = 'MUSIC' AND CART_NUMBER = c.NUMBER AND c.SCHED_CODES LIKE '%#{style}%'"
 		rs = con.query(query)
 		counters[i] += rs.first['count']
 		lengths[i] += rs.first['length'] || 0
@@ -52,7 +52,7 @@ class RapportController < ApplicationController
 
 	    # calcul du total sur le jour
 	    query = "SELECT COUNT(l.ID) AS count, SUM(c.AVERAGE_LENGTH) AS length FROM #{tableName} l, CART c
-	  WHERE GRACE_TIME = 0 AND CART_NUMBER = c.NUMBER"
+	  WHERE GROUP_NAME = 'MUSIC' AND CART_NUMBER = c.NUMBER"
 	    rs = con.query(query)
 	    counters[counters.count - 1] += rs.first['count']	
 	    lengths[lengths.count - 1] += rs.first['length']	
@@ -100,9 +100,11 @@ class RapportController < ApplicationController
   end
 
   def result_hash(styles, counters, lengths)
-    styles.map.with_index do |style, i|
-      { style => { :count => counters[i], :length => lengths[i] } }
+    result = {}
+    styles.each.with_index do |style, i|
+      result[style] = { :count => counters[i], :length => lengths[i] }
     end
+    result
   end
 
   def format_date(date)

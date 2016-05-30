@@ -6,8 +6,8 @@ class RapportController < ApplicationController
 
     styles_disco = ActiveSupport::JSON.decode params[:styles]
 
-    # liste des compteurs par style et le total
-    counters = Array.new(styles_disco.count + 1, 0)
+    # liste des compteurs par style, la playlist et le total
+    counters = Array.new(styles_disco.count + 2, 0)
 
     # effectue le mapping entre les styles Disco et Rivendell
     styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i) }

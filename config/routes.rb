@@ -10,7 +10,8 @@ Rails.application.routes.draw do
   get 'importer' => 'importer#index'
   post 'importer' => 'importer#index'
 
-
+  post 'importer/upload' => 'importer#upload'
+  
   get 'rapport' => 'rapport#index'
   post 'rapport' => 'rapport#index'
   # Example of named route that can be invoked with purchase_url(id: product.id)

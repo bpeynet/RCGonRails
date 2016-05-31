@@ -1,10 +1,9 @@
 class ImporterController < ApplicationController
   protect_from_forgery with: :null_session
-  require 'openssl'
-  require 'base64'
   require 'database_connection'
   include DatabaseConnection
-  before_action :check_autorization_index
+  before_action :check_authorization, :except => :upload
+  before_action :check_authorization_upload, :only => :upload
   
   def index
     render text: "signature verified"
@@ -27,16 +26,28 @@ class ImporterController < ApplicationController
 
   private
 
-  def check_autorization_index
+  def sanitize_filename(filename)
+    return File.basename(filename)
+  end
+
+  def check_authorization
     data = params[:data]
 
-    api_key = Rails.configuration.x.api['api_key']
-
-    hash = OpenSSL::HMAC.hexdigest('sha256', api_key, data)
-    signature = request.headers['HTTP_SIGNATURE']
-
-    if signature != hash
+    if !signature_verified? data
       head :forbidden
+      return false
     end
   end
+
+  def check_authorization_upload
+    file = params['multifile_0']
+    if file
+      if signature_verified? file.read
+	return
+      end
+    end
+    head :forbidden
+    return false
+  end
+
 end

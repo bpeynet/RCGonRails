@@ -3,13 +3,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  def disco_to_rivendell(disco_style)
-    mapping_hash[disco_style]
-  end
-
-  private
-
   def mapping_hash
     @mapping_hash ||= YAML.load_file(Rails.root.join('config', 'styles.yml'));
   end
+
 end

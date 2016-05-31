@@ -79,7 +79,7 @@ class RapportController < ApplicationController
 
   def init_styles(styles_disco)
     mapping = mapping_hash
-    styles = mapping_hash.keep_if { |k, v| styles_disco.include? k }
+    styles = mapping_hash.keep_if { |k, v| styles_disco.include? k.to_s }
     styles[:playlist] = "MuPlayList"
     styles
   end

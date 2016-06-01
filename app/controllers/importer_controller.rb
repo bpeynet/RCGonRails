@@ -41,10 +41,8 @@ class ImporterController < ApplicationController
 
   def check_authorization_upload
     file = params['multifile_0']
-    if file
-      if signature_verified? file.read
-	return
-      end
+    if file && signature_verified?(file.read)
+      return
     end
     head :forbidden
     return false

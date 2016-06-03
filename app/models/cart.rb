@@ -7,7 +7,7 @@ class Cart
     conf.rivendell.host = Rails.configuration.x.api['rivendell_host']
     conf.rivendell.db_url = Rails.configuration.x.api['rivendell_db_url']
 
-    @f = Rivendell::Import::File.new options['file'].path
+    @f = Rivendell::Import::File.new options[:file].path
     t = Rivendell::Import::Task.new :file => @f
     @c = Rivendell::Import::Cart.new t
     @c.group = "MUSIC"

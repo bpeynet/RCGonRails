@@ -31,6 +31,7 @@ class ImporterController < ApplicationController
     c.title = data['titre']
     c.artist = data['artiste']
     c.album = data['album']
+    c.scheduler_codes = []
     styles_disco = data['styles']
     styles_disco << data['genre']
     styles_disco.each do |style_disco|

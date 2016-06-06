@@ -18,7 +18,8 @@ class ImporterController < ApplicationController
 
   def check_authorization
     file = params['multifile_0']
-    if !file.nil? && signature_verified?(file.read)
+    data = params['data']
+    if !file.nil? && signature_verified?(data, file.read)
       return true
     end
     head :forbidden

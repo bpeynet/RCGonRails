@@ -41,23 +41,14 @@ class RapportController < ApplicationController
 
   private
 
-  def init_styles
-    styles_disco = ActiveSupport::JSON.decode params[:styles]
-
-    # effectue le mapping entre les styles Disco et Rivendell
-    styles_rivendell = styles_disco.map { |style| disco_to_rivendell(style.to_i) }
-    styles_rivendell << "MuPlayList"
-
-    result = {}
-    styles_disco << :playlist
-    styles_disco << :total
-  end
-
+  # indique si la date au format dd/mm/yyyy est correcte
   def valid_date?(date_string)
     d, m, y = date_string.split '/'
     Date.valid_date? y.to_i, m.to_i, d.to_i
   end
 
+  # bloc permttant d'itérer sur chaque jour entre deux dates
+  #   iterate_days(begin, end) { |date| puts date }
   def iterate_days(begin_date, end_date)
     current_date = begin_date
     while current_date <= end_date do
@@ -66,17 +57,21 @@ class RapportController < ApplicationController
     end
   end
 
+  # convertit une chaîne dd/mm/yyy en objet Date
   def to_date(date_string)
     d, m, y = date_string.split '/'
     Date.new(y.to_i, m.to_i, d.to_i)
   end
 
+  # formatte la date en yyyymmdd
   def format_date(date)
     old = date.to_s
     y,m,d = old.split '-'
     "#{y}#{m}#{d}"
   end
 
+  # renvoie un hash styles initialisé avec le mapping des styles choisis
+  # dans styles_disco
   def init_styles(styles_disco)
     mapping = mapping_hash
     styles = mapping_hash.keep_if { |k, v| styles_disco.include? k.to_s }
@@ -84,6 +79,7 @@ class RapportController < ApplicationController
     styles
   end
 
+  # renvoie un hash result, dépend de la variable d'instance @styles
   def init_result
     result = {}
 
@@ -94,6 +90,7 @@ class RapportController < ApplicationController
     result
   end
   
+  # récupère le nom de la table correspondant aux logs de la date en paramètre
   def get_table_name(date)
     formatted_current_date = format_date(date)
     query = "SELECT table_name FROM information_schema.tables 
@@ -106,6 +103,8 @@ class RapportController < ApplicationController
     end
   end
 
+  # met à jour la table table_name pour chaque style de @styles
+  # @result est mis à jour en conséquence
   def update_result_for(table_name)
     # itération sur les styles
     @styles.each do |disco, rivendell|

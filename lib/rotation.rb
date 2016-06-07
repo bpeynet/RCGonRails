@@ -4,7 +4,7 @@ module Rotation
     include DatabaseConnection
 
     DatabaseConnection::connect do |conn|
-      formatted_date = date.to_formatted_s(:db)
+      formatted_date = date.to_formatted_s(:db) # format yyyy-mm-dd
 
       query = "UPDATE CART
              SET SCHED_CODES=REPLACE(SCHED_CODES,'MuPlayList ','')

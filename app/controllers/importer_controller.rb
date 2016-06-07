@@ -12,10 +12,12 @@ class ImporterController < ApplicationController
 
   private
 
+  # réécrit le nom de fichier pour les anciennes versions IE
   def sanitize_filename(filename)
     return File.basename(filename)
   end
 
+  # callback permettant de vérifier la signature des données
   def check_authorization
     file = params['multifile_0']
     data = params['data']
@@ -26,6 +28,7 @@ class ImporterController < ApplicationController
     return false
   end
 
+  # renvoie l'objet Cart correspondant au fichier file et aux données data
   def get_cart(file, data)
     c = Cart.new :file => file
 

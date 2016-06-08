@@ -1,9 +1,13 @@
 production:
   api_key: <%= ENV["API_KEY"] %>
   rivendell_host: 192.168.1.10
+  rivendell_user: rduser
+  rivendell_password: letmein
   rivendell_db_url: mysql://rduser:letmein@192.168.1.10/Rivendell
 
 development:
   api_key: secret_key
   rivendell_host: 192.168.1.10
+  rivendell_user: rduser
+  rivendell_password: letmein
   rivendell_db_url: mysql://rduser:letmein@192.168.1.10/Rivendell
